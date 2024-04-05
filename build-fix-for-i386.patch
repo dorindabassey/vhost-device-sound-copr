@@ -1,0 +1,21 @@
+diff -ruN /home/dorindabassey/Downloads/vhost-device-vhost-device-sound-v0.1.0/vhost-device-sound/src/audio_backends/alsa.rs vhost-device-sound/src/audio_backends/alsa.rs
+--- /home/dorindabassey/Downloads/vhost-device-vhost-device-sound-v0.1.0/vhost-device-sound/src/audio_backends/alsa.rs	2024-02-07 14:53:27.000000000 +0100
++++ vhost-device-sound/src/audio_backends/alsa.rs	2024-04-04 22:04:46.847755599 +0200
+@@ -162,7 +162,7 @@
+ 
+             let period_frames = period_bytes / frame_size;
+ 
+-            hwp.set_period_size(i64::from(period_frames), alsa::ValueOr::Less)?;
++            hwp.set_period_size(i64::from(period_frames).try_into().unwrap(), alsa::ValueOr::Less)?;
+ 
+             // Online ALSA driver recommendations seem to be that the buffer should be at
+             // least 2 * period_size.
+@@ -175,7 +175,7 @@
+             // > as well as the parameters set in the snd_pcm_hardware structure (in the driver).
+             //
+             // So, if the operation fails let's assume the ALSA runtime has set a better value.
+-            if let Err(err) = hwp.set_buffer_size_near(2 * i64::from(period_frames)) {
++            if let Err(err) = hwp.set_buffer_size_near((2 * i64::from(period_frames)).try_into().unwrap()) {
+                 log::error!("could not set buffer size {}: {}", 2 * period_frames, err);
+             }
+ 
