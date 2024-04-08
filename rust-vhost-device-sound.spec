@@ -50,7 +50,6 @@ License:        (Apache-2.0 OR BSD-3-Clause) AND ((MIT OR Apache-2.0) AND Unicod
 
 %package        devel
 Summary:        %{summary}
-BuildArch:      noarch
 
 %description    devel %{_description}
 
@@ -68,7 +67,6 @@ use the "%{crate}" crate.
 
 %package     -n %{name}+default-devel
 Summary:        %{summary}
-BuildArch:      noarch
 
 %description -n %{name}+default-devel %{_description}
 
@@ -80,7 +78,6 @@ use the "default" feature of the "%{crate}" crate.
 
 %package     -n %{name}+alsa-backend-devel
 Summary:        %{summary}
-BuildArch:      noarch
 
 %description -n %{name}+alsa-backend-devel %{_description}
 
@@ -92,7 +89,6 @@ use the "alsa-backend" feature of the "%{crate}" crate.
 
 %package     -n %{name}+pw-devel
 Summary:        %{summary}
-BuildArch:      noarch
 
 %description -n %{name}+pw-devel %{_description}
 
@@ -104,7 +100,6 @@ use the "pw" feature of the "%{crate}" crate.
 
 %package     -n %{name}+pw-backend-devel
 Summary:        %{summary}
-BuildArch:      noarch
 
 %description -n %{name}+pw-backend-devel %{_description}
 
@@ -116,7 +111,6 @@ use the "pw-backend" feature of the "%{crate}" crate.
 
 %package     -n %{name}+xen-devel
 Summary:        %{summary}
-BuildArch:      noarch
 
 %description -n %{name}+xen-devel %{_description}
 
