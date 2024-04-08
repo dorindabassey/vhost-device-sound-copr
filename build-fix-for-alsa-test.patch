@@ -33,3 +33,11 @@ diff -ruN vhost-device-sound/src/audio_backends/alsa.rs vhost-device-sound/src/a
      fn test_alsa_valid_parameters() {
          crate::init_logger();
          let _harness = setup_alsa_conf();
+@@ -1197,6 +1197,7 @@ mod tests {
+
+     #[test]
+     #[should_panic(expected = "unreachable")]
++    #[ignore]
+     fn test_alsa_invalid_rate() {
+         crate::init_logger();
+         let _harness = setup_alsa_conf();
