@@ -18,6 +18,8 @@ Patch0:          ignore-pw-server-test.patch
 Patch1: build-fix-for-alsa-test.patch
 #  Convert i64 values to i32
 Patch2: build-fix-for-i386.patch
+# Upstream doesn't provide man pages
+Patch3: man-page.patch
 
 # Package dependencies vmm-sys-util not built for s390x
 ExcludeArch: s390x
@@ -129,6 +131,7 @@ use the "xen" feature of the "%{crate}" crate.
 %ifarch i386
 %patch 2 -p1
 %endif
+%patch 3 -p1
 %cargo_prep
 
 %generate_buildrequires

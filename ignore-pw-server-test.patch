@@ -1,5 +1,5 @@
-diff -ruN /home/dorindabassey/Downloads/vhost-device-vhost-device-sound-v0.1.0/vhost-device-sound/src/audio_backends/pipewire.rs vhost-device-sound/src/audio_backends/pipewire.rs
---- /home/dorindabassey/Downloads/vhost-device-vhost-device-sound-v0.1.0/vhost-device-sound/src/audio_backends/pipewire.rs	2024-02-07 14:53:27.000000000 +0100
+diff -ruN vhost-device-sound/src/audio_backends/pipewire.rs vhost-device-sound/src/audio_backends/pipewire.rs
+--- vhost-device-sound/src/audio_backends/pipewire.rs	2024-02-07 14:53:27.000000000 +0100
 +++ vhost-device-sound/src/audio_backends/pipewire.rs	2024-04-04 19:53:11.294542032 +0200
 @@ -583,6 +583,7 @@
      use super::{test_utils::PipewireTestHarness, *};
@@ -17,8 +17,8 @@ diff -ruN /home/dorindabassey/Downloads/vhost-device-vhost-device-sound-v0.1.0/v
      fn test_pipewire_backend_invalid_stream() {
          crate::init_logger();
          let stream_params = Arc::new(RwLock::new(vec![]));
-diff -ruN /home/dorindabassey/Downloads/vhost-device-vhost-device-sound-v0.1.0/vhost-device-sound/src/audio_backends.rs vhost-device-sound/src/audio_backends.rs
---- /home/dorindabassey/Downloads/vhost-device-vhost-device-sound-v0.1.0/vhost-device-sound/src/audio_backends.rs	2024-02-07 14:53:27.000000000 +0100
+diff -ruN vhost-device-sound/src/audio_backends.rs vhost-device-sound/src/audio_backends.rs
+--- vhost-device-sound/src/audio_backends.rs	2024-02-07 14:53:27.000000000 +0100
 +++ vhost-device-sound/src/audio_backends.rs	2024-04-04 19:52:42.226634664 +0200
 @@ -67,6 +67,7 @@
      use super::*;
