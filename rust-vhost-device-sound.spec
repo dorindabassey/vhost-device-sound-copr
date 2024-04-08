@@ -63,6 +63,8 @@ use the "%{crate}" crate.
 %doc %{crate_instdir}/CHANGELOG.md
 %doc %{crate_instdir}/README.md
 %{crate_instdir}/
+%{_bindir}/vhost-device-sound
+%{_mandir}/man1/*
 
 %package     -n %{name}+default-devel
 Summary:        %{summary}
@@ -144,6 +146,8 @@ use the "xen" feature of the "%{crate}" crate.
 
 %install
 %cargo_install
+mkdir -p %{buildroot}/%{_mandir}/man1
+install -m 644 vhost-device-sound.1 %{buildroot}/%{_mandir}/man1/
 
 %if %{with check}
 %check
