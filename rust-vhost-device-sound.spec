@@ -6,14 +6,14 @@
 Name:           rust-vhost-device-sound
 Version:        0.1.0
 Release:        %autorelease
-Summary:        Virtio sound device using the vhost-user protocol
+Summary:        Virtio-sound device using the vhost-user protocol
 
 License:        Apache-2.0 OR BSD-3-Clause
 URL:            https://crates.io/crates/vhost-device-sound
 Source:         %{crates_source}
 
-#  Convert i64 values to i32
-Patch0: build-fix-for-i686.patch
+#  Convert period_frames values regardless of architecture
+Patch0: build-fix-for-alsa.patch
 # Upstream doesn't provide man pages
 Patch1: man-page.patch
 
@@ -24,13 +24,12 @@ BuildRequires:  cargo-rpm-macros >= 24
 BuildRequires:  dbus-daemon >= 1.14.10
 
 %global _description %{expand:
-A virtio sound device using the vhost-user protocol.}
+A virtio-sound device using the vhost-user protocol.}
 
 %description %{_description}
 
 %package     -n %{crate}
 Summary:        %{summary}
-# (Apache-2.0 OR BSD-3-Clause) AND ((MIT OR Apache-2.0) AND Unicode-DFS-2016) AND (Apache-2.0 OR MIT) AND (Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT) AND Apache-2.0 AND BSD-3-Clause AND MIT AND (Unlicense OR MIT)
 License:        (Apache-2.0 OR BSD-3-Clause) AND ((MIT OR Apache-2.0) AND Unicode-DFS-2016) AND (Apache-2.0 OR MIT) AND (Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT) AND Apache-2.0 AND BSD-3-Clause AND MIT AND (Unlicense OR MIT)
 # LICENSE.dependencies contains a full license breakdown
 
@@ -47,6 +46,7 @@ License:        (Apache-2.0 OR BSD-3-Clause) AND ((MIT OR Apache-2.0) AND Unicod
 
 %package        devel
 Summary:        %{summary}
+BuildArch:      noarch
 
 %description    devel %{_description}
 
@@ -54,10 +54,15 @@ This package contains library source intended for building other packages which
 use the "%{crate}" crate.
 
 %files          devel
+%license %{crate_instdir}/LICENSE-APACHE
+%license %{crate_instdir}/LICENSE-BSD-3-Clause
+%doc %{crate_instdir}/CHANGELOG.md
+%doc %{crate_instdir}/README.md
 %{crate_instdir}/
 
 %package     -n %{name}+default-devel
 Summary:        %{summary}
+BuildArch:      noarch
 
 %description -n %{name}+default-devel %{_description}
 
@@ -69,6 +74,7 @@ use the "default" feature of the "%{crate}" crate.
 
 %package     -n %{name}+alsa-backend-devel
 Summary:        %{summary}
+BuildArch:      noarch
 
 %description -n %{name}+alsa-backend-devel %{_description}
 
@@ -80,6 +86,7 @@ use the "alsa-backend" feature of the "%{crate}" crate.
 
 %package     -n %{name}+pw-devel
 Summary:        %{summary}
+BuildArch:      noarch
 
 %description -n %{name}+pw-devel %{_description}
 
@@ -91,6 +98,7 @@ use the "pw" feature of the "%{crate}" crate.
 
 %package     -n %{name}+pw-backend-devel
 Summary:        %{summary}
+BuildArch:      noarch
 
 %description -n %{name}+pw-backend-devel %{_description}
 
@@ -102,6 +110,7 @@ use the "pw-backend" feature of the "%{crate}" crate.
 
 %package     -n %{name}+xen-devel
 Summary:        %{summary}
+BuildArch:      noarch
 
 %description -n %{name}+xen-devel %{_description}
 
@@ -112,11 +121,7 @@ use the "xen" feature of the "%{crate}" crate.
 %ghost %{crate_instdir}/Cargo.toml
 
 %prep
-%setup -n %{crate}-%{version}
-%ifarch i686
-%patch 0 -p1
-%endif
-%patch 1 -p1
+%autosetup -n %{crate}-%{version} -p1
 %cargo_prep
 
 %generate_buildrequires
@@ -135,16 +140,7 @@ install -p -m 644 vhost-device-sound.1 %{buildroot}/%{_mandir}/man1/
 %if %{with check}
 %check
 # * test does not panic
-%cargo_test -- -- --exact --skip result::tests::async_seq_panic
-%cargo_test -- -- --exact --skip audio_backends::alsa::tests::test_alsa_invalid_rate
-%cargo_test -- -- --exact --skip audio_backends::alsa::tests::test_alsa_invalid_state_transitions
-%cargo_test -- -- --exact --skip audio_backends::alsa::tests::test_alsa_invalid_stream_id
-%cargo_test -- -- --exact --skip audio_backends::alsa::tests::test_alsa_ops
-%cargo_test -- -- --exact --skip audio_backends::alsa::tests::test_alsa_valid_parameters
-%cargo_test -- -- --exact --skip audio_backends::alsa::tests::test_alsa_invalid_fmt
-%cargo_test -- -- --exact --skip audio_backends::tests::test_alloc_audio_backend
-%cargo_test -- -- --exact --skip audio_backends::pipewire::tests::test_pipewire_backend_success
-%cargo_test -- -- --exact --skip audio_backends::pipewire::tests::test_pipewire_backend_invalid_stream
+%cargo_test -- -- --exact --skip audio_backends::pipewire::tests::test_pipewire_backend_invalid_stream audio_backends::pipewire::tests::test_pipewire_backend_success audio_backends::tests::test_alloc_audio_backend audio_backends::alsa::tests::test_alsa_invalid_fmt audio_backends::alsa::tests::test_alsa_valid_parameters audio_backends::alsa::tests::test_alsa_ops result::tests::async_seq_panic audio_backends::alsa::tests::test_alsa_invalid_rate audio_backends::alsa::tests::test_alsa_invalid_state_transitions audio_backends::alsa::tests::test_alsa_invalid_stream_id
 %endif
 
 %changelog
