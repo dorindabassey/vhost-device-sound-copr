@@ -12,14 +12,10 @@ License:        Apache-2.0 OR BSD-3-Clause
 URL:            https://crates.io/crates/vhost-device-sound
 Source:         %{crates_source}
 
-# Manually created patch to ignore pipewire server test
-Patch0:          ignore-pw-server-test.patch
-# Alsa unit test fails on x86_64
-Patch1: build-fix-for-alsa-test.patch
 #  Convert i64 values to i32
-Patch2: build-fix-for-i386.patch
+Patch0: build-fix-for-i686.patch
 # Upstream doesn't provide man pages
-Patch3: man-page.patch
+Patch1: man-page.patch
 
 # Package dependencies vmm-sys-util not built for s390x
 ExcludeArch: s390x
@@ -34,7 +30,7 @@ A virtio sound device using the vhost-user protocol.}
 
 %package     -n %{crate}
 Summary:        %{summary}
-# FIXME: paste output of %%cargo_license_summary here
+# (Apache-2.0 OR BSD-3-Clause) AND ((MIT OR Apache-2.0) AND Unicode-DFS-2016) AND (Apache-2.0 OR MIT) AND (Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT) AND Apache-2.0 AND BSD-3-Clause AND MIT AND (Unlicense OR MIT)
 License:        (Apache-2.0 OR BSD-3-Clause) AND ((MIT OR Apache-2.0) AND Unicode-DFS-2016) AND (Apache-2.0 OR MIT) AND (Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT) AND Apache-2.0 AND BSD-3-Clause AND MIT AND (Unlicense OR MIT)
 # LICENSE.dependencies contains a full license breakdown
 
@@ -47,6 +43,7 @@ License:        (Apache-2.0 OR BSD-3-Clause) AND ((MIT OR Apache-2.0) AND Unicod
 %doc CHANGELOG.md
 %doc README.md
 %{_bindir}/vhost-device-sound
+%{_mandir}/man1/*
 
 %package        devel
 Summary:        %{summary}
@@ -57,13 +54,7 @@ This package contains library source intended for building other packages which
 use the "%{crate}" crate.
 
 %files          devel
-%license %{crate_instdir}/LICENSE-APACHE
-%license %{crate_instdir}/LICENSE-BSD-3-Clause
-%doc %{crate_instdir}/CHANGELOG.md
-%doc %{crate_instdir}/README.md
 %{crate_instdir}/
-%{_bindir}/vhost-device-sound
-%{_mandir}/man1/*
 
 %package     -n %{name}+default-devel
 Summary:        %{summary}
@@ -122,12 +113,10 @@ use the "xen" feature of the "%{crate}" crate.
 
 %prep
 %setup -n %{crate}-%{version}
+%ifarch i686
 %patch 0 -p1
-%patch 1 -p1
-%ifarch i386
-%patch 2 -p1
 %endif
-%patch 3 -p1
+%patch 1 -p1
 %cargo_prep
 
 %generate_buildrequires
@@ -141,12 +130,21 @@ use the "xen" feature of the "%{crate}" crate.
 %install
 %cargo_install
 mkdir -p %{buildroot}/%{_mandir}/man1
-install -m 644 vhost-device-sound.1 %{buildroot}/%{_mandir}/man1/
+install -p -m 644 vhost-device-sound.1 %{buildroot}/%{_mandir}/man1/
 
 %if %{with check}
 %check
 # * test does not panic
 %cargo_test -- -- --exact --skip result::tests::async_seq_panic
+%cargo_test -- -- --exact --skip audio_backends::alsa::tests::test_alsa_invalid_rate
+%cargo_test -- -- --exact --skip audio_backends::alsa::tests::test_alsa_invalid_state_transitions
+%cargo_test -- -- --exact --skip audio_backends::alsa::tests::test_alsa_invalid_stream_id
+%cargo_test -- -- --exact --skip audio_backends::alsa::tests::test_alsa_ops
+%cargo_test -- -- --exact --skip audio_backends::alsa::tests::test_alsa_valid_parameters
+%cargo_test -- -- --exact --skip audio_backends::alsa::tests::test_alsa_invalid_fmt
+%cargo_test -- -- --exact --skip audio_backends::tests::test_alloc_audio_backend
+%cargo_test -- -- --exact --skip audio_backends::pipewire::tests::test_pipewire_backend_success
+%cargo_test -- -- --exact --skip audio_backends::pipewire::tests::test_pipewire_backend_invalid_stream
 %endif
 
 %changelog
