@@ -6,7 +6,7 @@ diff -ruN vhost-device-sound/src/audio_backends/alsa.rs vhost-device-sound/src/a
              // Finally, calculate the size of a period (in frames):
  
 -            let period_frames = period_bytes / frame_size;
-+            let period_frames = alsa::pcm::Frames::from(period_bytes / frame_size);
++            let period_frames = alsa::pcm::Frames::from(period_bytes / frame_size).try_into().unwrap();
  
 -            hwp.set_period_size(i64::from(period_frames), alsa::ValueOr::Less)?;
 +            hwp.set_period_size(period_frames, alsa::ValueOr::Less)?;
