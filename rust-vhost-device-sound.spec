@@ -140,7 +140,13 @@ install -p -m 644 vhost-device-sound.1 %{buildroot}/%{_mandir}/man1/
 %if %{with check}
 %check
 # * test does not panic
-%cargo_test -- -- --exact --skip audio_backends::pipewire::tests::test_pipewire_backend_invalid_stream audio_backends::pipewire::tests::test_pipewire_backend_success audio_backends::tests::test_alloc_audio_backend audio_backends::alsa::tests::test_alsa_invalid_fmt audio_backends::alsa::tests::test_alsa_valid_parameters audio_backends::alsa::tests::test_alsa_ops result::tests::async_seq_panic audio_backends::alsa::tests::test_alsa_invalid_rate audio_backends::alsa::tests::test_alsa_invalid_state_transitions audio_backends::alsa::tests::test_alsa_invalid_stream_id
+%cargo_test -- -- --skip audio_backends::pipewire::tests::test_pipewire_backend_invalid_stream \
+--skip audio_backends::pipewire::tests::test_pipewire_backend_success \
+--skip audio_backends::tests::test_alloc_audio_backend --skip audio_backends::alsa::tests::test_alsa_invalid_fmt \
+--skip audio_backends::alsa::tests::test_alsa_valid_parameters --skip audio_backends::alsa::tests::test_alsa_ops \
+--skip result::tests::async_seq_panic --skip audio_backends::alsa::tests::test_alsa_invalid_rate \
+--skip audio_backends::alsa::tests::test_alsa_invalid_state_transitions \
+--skip audio_backends::alsa::tests::test_alsa_invalid_stream_id
 %endif
 
 %changelog
