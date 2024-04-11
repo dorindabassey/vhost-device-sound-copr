@@ -12,13 +12,12 @@ License:        Apache-2.0 OR BSD-3-Clause
 URL:            https://crates.io/crates/vhost-device-sound
 Source:         %{crates_source}
 
-#  Convert period_frames values regardless of architecture
-Patch0: build-fix-for-alsa.patch
 # Upstream doesn't provide man pages
-Patch1: man-page.patch
+Patch0: man-page.patch
 
 # Package dependencies vmm-sys-util not built for s390x
-ExcludeArch: s390x
+# Upstream Package dependency vm-memory only support 64bit
+ExcludeArch: i386 i686 s390x
 
 BuildRequires:  cargo-rpm-macros >= 24
 BuildRequires:  dbus-daemon >= 1.14.10
@@ -30,7 +29,14 @@ A virtio-sound device using the vhost-user protocol.}
 
 %package     -n %{crate}
 Summary:        %{summary}
-License:        (Apache-2.0 OR BSD-3-Clause) AND ((MIT OR Apache-2.0) AND Unicode-DFS-2016) AND (Apache-2.0 OR MIT) AND (Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT) AND Apache-2.0 AND BSD-3-Clause AND MIT AND (Unlicense OR MIT)
+# (MIT OR Apache-2.0) AND Unicode-DFS-2016
+# Apache-2.0
+# Apache-2.0 OR BSD-3-Clause
+# Apache-2.0 OR MIT
+# BSD-3-Clause
+# MIT
+# Unlicense OR MIT
+License:        ((MIT OR Apache-2.0) AND Unicode-DFS-2016) AND Apache-2.0 AND (Apache-2.0 OR BSD-3-Clause) AND (Apache-2.0 OR MIT) AND BSD-3-Clause AND MIT AND (Unlicense OR MIT)
 # LICENSE.dependencies contains a full license breakdown
 
 %description -n %{crate} %{_description}
@@ -139,12 +145,13 @@ install -p -m 644 vhost-device-sound.1 %{buildroot}/%{_mandir}/man1/
 
 %if %{with check}
 %check
-# * test does not panic
+# * skip pipewire tests that fail because it requires test utility to launch a temporary dbus daemon for pipewire.
+# * skip alsa tests that fail because of unwrapping the result of PCM::new(), which lead to a runtime panic
 %cargo_test -- -- --skip audio_backends::pipewire::tests::test_pipewire_backend_invalid_stream \
 --skip audio_backends::pipewire::tests::test_pipewire_backend_success \
 --skip audio_backends::tests::test_alloc_audio_backend --skip audio_backends::alsa::tests::test_alsa_invalid_fmt \
 --skip audio_backends::alsa::tests::test_alsa_valid_parameters --skip audio_backends::alsa::tests::test_alsa_ops \
---skip result::tests::async_seq_panic --skip audio_backends::alsa::tests::test_alsa_invalid_rate \
+--skip audio_backends::alsa::tests::test_alsa_invalid_rate \
 --skip audio_backends::alsa::tests::test_alsa_invalid_state_transitions \
 --skip audio_backends::alsa::tests::test_alsa_invalid_stream_id
 %endif
