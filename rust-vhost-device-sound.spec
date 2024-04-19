@@ -17,7 +17,7 @@ Patch0: man-page.patch
 
 # Package dependencies vmm-sys-util not built for s390x
 # Upstream Package dependency vm-memory only support 64bit
-ExcludeArch: i386 i686 s390x
+ExcludeArch: %{ix86} s390x
 
 BuildRequires:  cargo-rpm-macros >= 24
 BuildRequires:  dbus-daemon >= 1.14.10
