@@ -147,13 +147,7 @@ install -p -m 644 vhost-device-sound.1 %{buildroot}/%{_mandir}/man1/
 %check
 # * skip pipewire tests that fail because it requires test utility to launch a temporary dbus daemon for pipewire.
 # * skip alsa tests that fail because of unwrapping the result of PCM::new(), which lead to a runtime panic
-%cargo_test -- -- --skip audio_backends::pipewire::tests::test_pipewire_backend_invalid_stream \
---skip audio_backends::pipewire::tests::test_pipewire_backend_success \
---skip audio_backends::tests::test_alloc_audio_backend --skip audio_backends::alsa::tests::test_alsa_invalid_fmt \
---skip audio_backends::alsa::tests::test_alsa_valid_parameters --skip audio_backends::alsa::tests::test_alsa_ops \
---skip audio_backends::alsa::tests::test_alsa_invalid_rate \
---skip audio_backends::alsa::tests::test_alsa_invalid_state_transitions \
---skip audio_backends::alsa::tests::test_alsa_invalid_stream_id
+%cargo_test -- -- --skip audio_backends::pipewire::tests::test_pipewire_backend_invalid_stream --skip audio_backends::pipewire::tests::test_pipewire_backend_success --skip audio_backends::tests::test_alloc_audio_backend --skip audio_backends::alsa::tests::test_alsa_invalid_fmt --skip audio_backends::alsa::tests::test_alsa_valid_parameters --skip audio_backends::alsa::tests::test_alsa_ops --skip audio_backends::alsa::tests::test_alsa_invalid_rate --skip audio_backends::alsa::tests::test_alsa_invalid_state_transitions --skip audio_backends::alsa::tests::test_alsa_invalid_stream_id
 %endif
 
 %changelog
